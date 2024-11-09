@@ -1,6 +1,18 @@
 import streamlit as st
 import PIL
 import PIL.Image
+import pandas
+
+TITLE_KEY = "title"
+DESCRIPTION_KEY = "description"
+IMAGE_KEY = "image"
+URL_KEY = "url"
+
+def render_project_info(info):
+    st.header(info[TITLE_KEY])
+    st.write(info[DESCRIPTION_KEY])
+    st.image(f"images/{info[IMAGE_KEY]}")
+    st.write(f"[Source Code]({info[URL_KEY]})")
 
 st.set_page_config(layout="wide")
 
@@ -20,3 +32,17 @@ I am currently learning Python programming.
 On this website, you can see my Python projects.
 """
     st.info(content)
+
+st.write("Below you can find some of the apps I have built. Feel free to contact me!")
+
+data = pandas.read_csv("data.csv", sep=";")
+column_element_count = int(len(data) / 2)
+col3, empty_col, col4 = st.columns([1.5, 0.5, 1.5])
+
+with col3:
+    for index, row in data[:column_element_count].iterrows():
+        render_project_info(row)
+
+with col4:
+    for index, row in data[column_element_count:].iterrows():
+        render_project_info(row)
